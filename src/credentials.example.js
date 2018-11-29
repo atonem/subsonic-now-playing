@@ -11,4 +11,9 @@ const connection = {
 
 const config = {
   pollInterval: 5,
+  playerFilter: {
+    playerId: 1,
+    playerName: 'player-1',
+    username: 'username',
+  },
 };

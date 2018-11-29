@@ -7,12 +7,26 @@ class Subsonic {
     this._album =  document.getElementById('album');
     this._title =  document.getElementById('title');
 
-    console.log('instaniated subsonic', connection);
     this._connection = connection;
     this._client = createSubsonicClient(connection);
     this._getNowPlaying();
     this._currentTrack = null;
+    console.log('getNowPlaying link', this._client.system.getNowPlaying());
+
+    if (!config.playerFilter) {
+      console.error('No filter provided in config');
+      return;
+    }
+
+
+    this._filter = player => Object.keys(config.playerFilter).reduce((prev, key) => {
+        return prev && config.playerFilter[key] == player[key];
+      }, true);
+      //(key =>
+      //config.playerFilter[key] == player[key])
     setInterval(this._getNowPlaying.bind(this), config.pollInterval * 1000);
+
+    console.log('filter es?', this._filter);
   }
 
   _hide() {
@@ -20,23 +34,32 @@ class Subsonic {
     this._nowPlaying.classList.add('hidden');
   }
 
+  _getPlayerFromResponse(response) {
+    const nowPlaying = response['subsonic-response'].nowPlaying;
+
+    return nowPlaying.entry.find(this._filter);
+  }
+
   _getNowPlaying() {
     const getNowPlaying = this._client.system.getNowPlaying();
     axios.get(getNowPlaying)
       .then(response => response.data)
-      .then(response => {
-        const nowPlaying = response['subsonic-response'].nowPlaying;
-        const player = nowPlaying.entry.find(entry => entry.playerName ==
-          'jukebox');
+      .then(this._getPlayerFromResponse.bind(this))
+      .then(player => {
 
-        if (player.id == this._currentTrack) {
-          console.log('track hasnt changed, do nothing');
+        if (!player) {
+          this._hide();
           return;
         }
 
+        if (player.id == this._currentTrack) {
+          // Track has not changed, do nothing
+          return;
+        }
+
+
         this._currentTrack = player.id;
 
-        console.log('got response!', player);
         const { coverArt } = player;
         this._setCoverArt(coverArt, () => this._setArtistText(player));
 
@@ -81,29 +104,6 @@ class Subsonic {
 }
 
 window.addEventListener('load', function() {
-  console.log('All assets are loaded')
-  console.log('config', connection, config);
-  const client = createSubsonicClient(connection);
-  console.log('client', client);
-
-  //console.log('MD5: ' + MD5.hex(connection.password))
-
-  const getArtists = client.browsing.getArtists();
-  const getMusicFolders = client.browsing.getMusicFolders();
-  const jukeboxStatus = client.jukebox.get();
-  const jukeboxStart = client.jukebox.start();
-  const jukeboxStop = client.jukebox.stop();
-  //console.log('getNowPlaying', getNowPlaying);
-  //console.log('getArtists', getArtists);
-  //console.log('musicFolders', getMusicFolders);
-  //console.log('status', jukeboxStatus);
-  //console.log('start', jukeboxStart);
-  //console.log('stop', jukeboxStop);
   const subsonic = new Subsonic(connection, config);
-  console.log('subsonic', subsonic)
-
-  console.log('document', document);
-
-
 })
 
