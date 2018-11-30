@@ -16,4 +16,5 @@ const config = {
     playerName: 'player-1',
     username: 'username',
   },
+  fields: ['title', 'artist', 'album', 'year', 'size', 'suffix', 'duration', 'bitRate'],
 };

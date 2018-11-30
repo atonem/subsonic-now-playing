@@ -10,21 +10,16 @@
   <body>
     <div class="container">
       <div class="coverArt">
-        <img id="coverArt__image" class="hidden"  alt="coverArt" src="."/>
+        <img id="image" class="hidden"  alt="coverArt" src="."/>
       </div>
       <div id="nowPlaying" class="hidden">
-        <span id="title"></span>
-        <div id="artist-album-container">
-          <span id="artist"></span>
-          -
-          <span id="album"></span>
-        </div>
       </div>
     </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript" src="http://cdn.rawgit.com/h2non/jsHashes/master/hashes.js"></script>
     <script type="text/javascript" src="./credentials.js"></script>
     <script type="text/javascript" src="./subsonic-client.js"></script>
+    <script type="text/javascript" src="./field-formatter.js"></script>
     <script type="text/javascript" src="./bundle.js"></script>
   </body>
 </html>

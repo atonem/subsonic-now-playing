@@ -2,10 +2,7 @@
 class Subsonic {
   constructor(connection, config) {
     this._nowPlaying =  document.getElementById('nowPlaying');
-    this._img =  document.getElementById('coverArt__image');
-    this._artist =  document.getElementById('artist');
-    this._album =  document.getElementById('album');
-    this._title =  document.getElementById('title');
+    this._img =  document.getElementById('image');
 
     this._connection = connection;
     this._client = createSubsonicClient(connection);
@@ -17,6 +14,9 @@ class Subsonic {
       console.error('No filter provided in config');
       return;
     }
+
+    this._fields = {};
+    this._renderNowPlaying(config.fields || []);
 
 
     this._filter = player => Object.keys(config.playerFilter).reduce((prev, key) => {
@@ -61,7 +61,7 @@ class Subsonic {
         this._currentTrack = player.id;
 
         const { coverArt } = player;
-        this._setCoverArt(coverArt, () => this._setArtistText(player));
+        this._setCoverArt(coverArt, () => this._setNowPlaying(player));
 
 
       })
@@ -70,6 +70,45 @@ class Subsonic {
         console.error(err);
         this._hide();
       });
+  }
+
+  _setNowPlaying(player) {
+    if (player) {
+      Object.keys(this._fields).forEach(field => {
+        const element = this._fields[field];
+        // TODO: If no key, hide field
+        let value = player[field];
+
+        if (!value) {
+          if (!element.className.includes('hidden')) {
+            // No value for this field on this track, and is visible
+            element.classList.add('hidden');
+          }
+          return;
+        }
+
+        if (fieldFormatter[field]) {
+          // See src/field-formatter.js to add custom formatting of fields
+          value = fieldFormatter[field](value);
+        }
+        // Update element value
+        element.textContent = value;
+
+        if (element.className.includes('hidden')) {
+          // Element has updated value but has hidden class, remove it
+          element.classList.remove('hidden');
+        }
+
+      });
+
+      if (this._nowPlaying.className.includes('hidden')) {
+        // We have data but nowPlaying dom is hidden, show it
+        this._nowPlaying.classList.remove('hidden');
+      }
+    } else if (!this._nowPlaying.className.includes('hidden')) {
+      // No nowPlaying data available, hide nowPlaying dom
+      this._nowPlaying.classList.add('hidden');
+    }
   }
 
   _setCoverArt(id, cb) {
@@ -85,22 +124,22 @@ class Subsonic {
     }
   }
 
-  _setArtistText(nowPlaying) {
-    this._artist.textContent = nowPlaying.artist;
-    this._album.textContent = nowPlaying.album;
-    this._title.textContent = nowPlaying.title;
-    this._nowPlaying.classList.remove('hidden');
-
-  }
-
   _getSize() {
     const size = Math.min(window.innerWidth, window.innerHeight);
 
     return size - 60; // 60 is 2 * the padding of #container
-
   }
 
+  _renderNowPlaying(fields) {
+    fields.forEach(field => {
+      const element = document.createElement('div');
+      element.setAttribute('id', field);
+      element.classList.add('field');
 
+      this._nowPlaying.appendChild(element);
+      this._fields[field] = element;
+    });
+  }
 }
 
 window.addEventListener('load', function() {

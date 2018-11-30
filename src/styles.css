@@ -35,7 +35,7 @@ body {
   justify-content: center;
 }
 
-#coverArt__image {
+#image {
   transition: all 1s ease;
   width: auto;
   height: auto;
@@ -49,12 +49,16 @@ body {
   padding: 20px;
 
   background:rgba(255,255,255,0.2);
+}
+
+/*Generic styling applicable to each field*/
+.field {
 
 }
 
+/*Specific styling for fields*/
 #title {
-  font-size: 40px;
-  text-align: center;
+
 }
 
 #artist {
@@ -65,10 +69,22 @@ body {
 
 }
 
-#artist-album-container {
-  display: flex;
-  justify-content: center;
+#year {
 
-  color: #333;
-  font-size: 30px;
+}
+
+#size {
+
+}
+
+#suffix {
+
+}
+
+#duration {
+
+}
+
+#bitRate {
+
 }
