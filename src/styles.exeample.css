@@ -1,0 +1,91 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.container {
+  display: flex;
+  align-items: flex-start;
+
+
+  /*Change to column to position text under the image instaed*/
+  /*flex-direction: column;*/
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  padding: 30px;
+
+  background: linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),
+            linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%),
+            linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%);
+}
+
+.coverArt {
+  display: flex;
+  justify-content: center;
+}
+
+#image {
+  transition: all 1s ease;
+  width: auto;
+  height: auto;
+}
+
+#nowPlaying {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0 20px;
+  flex-grow: 1;
+  padding: 20px;
+
+  background:rgba(255,255,255,0.2);
+}
+
+/*Generic styling applicable to each field*/
+.field {
+  /*Default width is 100% to force a separate row for each field*/
+  width: 100%;
+
+}
+
+/*Specific styling for fields*/
+#title {
+  font-size: 40px;
+}
+
+#artist {
+
+}
+
+#album {
+  color: red;
+
+}
+
+#year {
+
+}
+
+#size,
+#suffix,
+#duration,
+#bitRate {
+  display: inline-block;
+  width: initial;
+}
+
+#size:after,
+#suffix:after,
+#duration:after {
+  padding: 0 5px;
+  content: "*";
+}
